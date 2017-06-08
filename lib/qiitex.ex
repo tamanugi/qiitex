@@ -8,7 +8,7 @@ defmodule Qiitex do
   @type response :: binary | {integer, binary}
 
   @spec process_response(HTTPoison.Response.t) :: response
-  def process_response(%HTTPoison.Response{status_code: 200, body: body}), do: body 
+  def process_response(%HTTPoison.Response{status_code: 200, body: body}), do: body
   def process_response(%HTTPoison.Response{status_code: status_code, body: body }), do: { status_code, body }
 
   @spec delete(binary, Client.t, binary) :: response
@@ -43,14 +43,15 @@ defmodule Qiitex do
       method, url, body,
       ["Content-Type": "application/json"] ++ authorization_header(auth, @user_agent)
     )
+    |> process_response
   end
 
   def json_request(method, url, body \\ "", headers \\ [], options \\ []) do
-    request!(method, url, Poison.encode!(body), headers, options) |> process_response
-  end
-
-  def raw_request(method, url, body \\ "", headers \\ [], options \\ []) do
-    request!(method, url, body, headers, options) |> process_response
+    _body = case body do
+      "" -> body
+      _  -> Poison.encode!(body) 
+    end
+    request!(method, url, _body, headers, options) 
   end
 
   @spec url(client :: Client.t, path :: binary) :: binary
