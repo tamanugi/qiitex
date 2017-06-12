@@ -30,7 +30,8 @@ defmodule Qiitex.Mixfile do
   defp deps do
     [
       {:httpoison, "~>0.11"},
-      {:poison, "~>3.1"}
+      {:poison, "~>3.1"},
+      {:ex_json_schema, "~> 0.5.4"}
     ]
   end
 end
