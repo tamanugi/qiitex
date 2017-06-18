@@ -37,8 +37,7 @@ defmodule Qiitex do
 
   @spec get(binary, Client.t, [{atom, binary}] | []) :: response
   def get(path, client, params \\ []) do
-    initial_url = url(client, path)
-    url = add_params_to_url(initial_url, params)
+    url = url(client, path) |> add_params_to_url(params)
     _request(:get, url, client.auth)
   end
 
@@ -51,11 +50,11 @@ defmodule Qiitex do
   end
 
   def json_request(method, url, body \\ "", headers \\ [], options \\ []) do
-    _body = case body do
+    encoded_body = case body do
       "" -> body
       _  -> Poison.encode!(body) 
     end
-    request!(method, url, _body, headers, options) 
+    request!(method, url, encoded_body, headers, options) 
   end
 
   @spec url(client :: Client.t, path :: binary) :: binary
