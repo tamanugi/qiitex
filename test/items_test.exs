@@ -11,10 +11,18 @@ defmodule Qiitex.ItemsTest do
     HTTPoison.start
   end
 
-  test "list/1" do
+  test "list/2 without params" do
 
     list(@client)
     |> Enum.each(fn(e) ->
+      assert ExJsonSchema.Validator.validate(@schema , e) == :ok
+    end)
+  end
+
+  test "list/2" do
+    list(@client, %{query: "qiita user:tamanugi"})
+    |> Enum.each(fn(e) ->
+      assert get_in(e, ["user", "id"]) == "tamanugi"
       assert ExJsonSchema.Validator.validate(@schema , e) == :ok
     end)
   end

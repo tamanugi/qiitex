@@ -1,8 +1,8 @@
 defmodule Qiitex.Items do
   import Qiitex
 
-  def list(client) do
-    get "/items", client
+  def list(client, params \\ []) do
+    get "/items", client, params
   end
 
   def find(client, item_id \\ "") do
