@@ -1,6 +1,7 @@
 defmodule Qiitex.TagsTest do
     use ExUnit.Case
     import Qiitex.Tags
+    alias Qiitex.Schema.SchemaHelper
 
     @client Qiitex.Client.new
 
@@ -10,14 +11,9 @@ defmodule Qiitex.TagsTest do
 
     test "tags/1" do
 
-        %HTTPoison.Response{body: body} = HTTPoison.get! "http://qiita.com/api/v2/schema?locale=en"
-        schema = body
-        |> Poison.decode!
-        |> Map.get("properties")
-        |> Map.get("tag")
-
         tags(@client)
-        |> Enum.each(fn(e) -> assert :ok = ExJsonSchema.Validator.validate(schema , e) end)
-        
+        |> Enum.each(fn(e) ->
+          assert ExJsonSchema.Validator.validate(SchemaHelper.schema("tag") , e) == :ok
+        end)
     end
 end
