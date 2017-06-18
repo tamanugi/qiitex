@@ -7,6 +7,10 @@ defmodule Qiitex do
 
   @type response :: binary | {integer, binary}
 
+  @spec process_response_body(binary) :: Poison.Parser.t
+  def process_response_body(""), do: nil
+  def process_response_body(body), do: Poison.decode!(body)
+
   @spec process_response(HTTPoison.Response.t) :: response
   def process_response(%HTTPoison.Response{status_code: 200, body: body}), do: body
   def process_response(%HTTPoison.Response{status_code: status_code, body: body }), do: { status_code, body }
