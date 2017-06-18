@@ -9,9 +9,9 @@ defmodule Qiitex.TagsTest do
         HTTPoison.start
     end
 
-    test "tags/1" do
+    test "list/1" do
 
-        tags(@client)
+        list(@client)
         |> Enum.each(fn(e) ->
           assert ExJsonSchema.Validator.validate(SchemaHelper.schema("tag") , e) == :ok
         end)

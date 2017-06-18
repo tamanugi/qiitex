@@ -1,7 +1,7 @@
 defmodule Qiitex.Tags do
     import Qiitex
 
-    def tags(client) do
+    def list(client) do
         get "/tags", client
     end
 end
