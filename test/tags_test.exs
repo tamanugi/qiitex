@@ -4,6 +4,7 @@ defmodule Qiitex.TagsTest do
     alias Qiitex.Schema.SchemaHelper
 
     @client Qiitex.Client.new
+    @schema SchemaHelper.schema("tag")
 
     setup_all do
         HTTPoison.start
@@ -13,13 +14,13 @@ defmodule Qiitex.TagsTest do
 
         list(@client)
         |> Enum.each(fn(e) ->
-          assert ExJsonSchema.Validator.validate(SchemaHelper.schema("tag") , e) == :ok
+          assert ExJsonSchema.Validator.validate(@schema , e) == :ok
         end)
     end
 
     test "find/2" do
         tag = find(@client, "elixir")
-        assert ExJsonSchema.Validator.validate(SchemaHelper.schema("tag") , tag) == :ok
+        assert ExJsonSchema.Validator.validate(@schema , tag) == :ok
         %{"icon_url" => icon_url,
           "id" => id} = tag
 
