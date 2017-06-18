@@ -62,7 +62,21 @@ defmodule Qiitex do
     endpoint <> path
   end
 
-  defp add_params_to_url(url, params) do
+  @doc """
+  Take an existing URI and add addition params, appending and replacing as necessary
+  ## Examples
+      iex> add_params_to_url("http://example.com/wat", [])
+      "http://example.com/wat"
+      iex> add_params_to_url("http://example.com/wat", [q: 1])
+      "http://example.com/wat?q=1"
+      iex> add_params_to_url("http://example.com/wat", [q: 1, t: 2])
+      "http://example.com/wat?q=1&t=2"
+      iex> add_params_to_url("http://example.com/wat", %{q: 1, t: 2})
+      "http://example.com/wat?q=1&t=2"
+      iex> add_params_to_url("http://example.com/wat", %{q: "1 2", t: "1:2"})
+      "http://example.com/wat?q=1+2&t=1%3A2"
+  """
+  def add_params_to_url(url, params) do
     <<url :: binary, build_qs(params) :: binary>>
   end
 
