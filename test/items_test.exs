@@ -30,5 +30,6 @@ defmodule Qiitex.ItemsTest do
   test "find/2" do
     item = find(@client, "43bad0158f4a4bb7d1d2")
     assert ExJsonSchema.Validator.validate(@schema , item) == :ok
+    assert item |> Map.get("title") == "fish + peco で git の色んなものを楽に選択する"
   end
 end
