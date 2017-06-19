@@ -32,4 +32,12 @@ defmodule Qiitex.ItemsTest do
     assert ExJsonSchema.Validator.validate(@schema , item) == :ok
     assert item |> Map.get("title") == "fish + peco で git の色んなものを楽に選択する"
   end
+
+  test "list_tag_items/3" do
+    list_tag_items(@client, "Elixir")
+    |> Enum.each(fn(e) ->
+      assert e |> Map.get("tags") |> Enum.any?(&(&1 |> Map.get("name") == "Elixir"))
+      assert ExJsonSchema.Validator.validate(@schema , e) == :ok
+    end)
+  end
 end
