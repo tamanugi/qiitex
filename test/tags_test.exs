@@ -27,4 +27,11 @@ defmodule Qiitex.TagsTest do
     assert icon_url  == "https://s3-ap-northeast-1.amazonaws.com/qiita-tag-image/6e0b49c8d70cd06c57386d923a8362fbaf71c233/medium.jpg?1364840830"
     assert id == "Elixir"
   end
+
+  test "user_following/3" do
+    user_following(@client, "tamanugi")
+    |> Enum.each(fn(e) ->
+      assert ExJsonSchema.Validator.validate(@schema , e) == :ok
+    end)
+  end
 end
