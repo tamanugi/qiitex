@@ -40,4 +40,19 @@ defmodule Qiitex.ItemsTest do
       assert ExJsonSchema.Validator.validate(@schema , e) == :ok
     end)
   end
+
+  test "list_user_items/3" do
+    list_user_items(@client, "tamanugi")
+    |> Enum.each(fn(e) ->
+      assert get_in(e, ["user", "id"]) == "tamanugi"
+      assert ExJsonSchema.Validator.validate(@schema , e) == :ok
+    end)
+  end
+
+  test "list_user_stock_items/3" do
+    list_user_stock_items(@client, "tamanugi")
+    |> Enum.each(fn(e) ->
+      assert ExJsonSchema.Validator.validate(@schema , e) == :ok
+    end)
+  end
 end
