@@ -10,7 +10,7 @@ defmodule Qiitex.TagsTest do
     HTTPoison.start
   end
 
-  test "list/1" do
+  test "list/2" do
 
     list(@client)
     |> Enum.each(fn(e) ->
