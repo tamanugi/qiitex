@@ -17,7 +17,7 @@ defmodule QiitexTest do
   test "process response on a non-200 response" do
     assert process_response(%HTTPoison.Response{ status_code: 404,
                                                  headers: %{},
-                                                 body: "json" }) == {404, "json"}
+                                                 body: "json" }) == "json"
   end
 
 end

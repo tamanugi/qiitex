@@ -28,9 +28,9 @@ defmodule Qiitex.ItemsTest do
   end
 
   test "find/2" do
-    item = find(@client, "43bad0158f4a4bb7d1d2")
+    item = find(@client, "5bbf6ef210273cf60dd4")
     assert ExJsonSchema.Validator.validate(@schema , item) == :ok
-    assert item |> Map.get("title") == "fish + peco で git の色んなものを楽に選択する"
+    assert item |> Map.get("title") == "QIITA API TEST ARTICLE"
   end
 
   test "list_tag_items/3" do
