@@ -8,4 +8,9 @@ defmodule Qiitex.ClientTest do
     client = new(%{})
     assert client.endpoint == "https://qiita.com/api/v2/"
   end
+
+  test "access token" do
+    client = new(%{access_token: "enteryouraccesstoken"})
+    assert client.auth == %{access_token: "enteryouraccesstoken"}
+  end
 end
