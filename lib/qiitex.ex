@@ -12,8 +12,7 @@ defmodule Qiitex do
   def process_response_body(body), do: Poison.decode!(body)
 
   @spec process_response(HTTPoison.Response.t) :: response
-  def process_response(%HTTPoison.Response{status_code: 200, body: body}), do: body
-  def process_response(%HTTPoison.Response{status_code: status_code, body: body }), do: { status_code, body }
+  def process_response(%HTTPoison.Response{status_code: _, body: body}), do: body
 
   @spec delete(binary, Client.t, binary) :: response
   def delete(path, client, body \\ "") do
