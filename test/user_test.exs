@@ -3,7 +3,7 @@ defmodule Qiitex.UserTest do
   import Qiitex.User
   alias Qiitex.TestHelper
 
-  @client Qiitex.Client.new(%{access_token: "enteryouraccesstoken"})
+  @client TestHelper.client
   @schema TestHelper.schema("user")
 
   setup_all do

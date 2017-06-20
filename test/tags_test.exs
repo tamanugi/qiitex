@@ -3,7 +3,7 @@ defmodule Qiitex.TagsTest do
   import Qiitex.Tags
   alias Qiitex.TestHelper
 
-  @client Qiitex.Client.new
+  @client TestHelper.client
   @schema TestHelper.schema("tag")
 
   setup_all do

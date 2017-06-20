@@ -3,7 +3,7 @@ defmodule Qiitex.ItemsTest do
   import Qiitex.Items
   alias Qiitex.TestHelper
 
-  @client Qiitex.Client.new
+  @client TestHelper.client
   @schema TestHelper.schema("item")
 
   setup_all do

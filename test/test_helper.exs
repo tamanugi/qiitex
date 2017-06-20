@@ -13,4 +13,8 @@ defmodule Qiitex.TestHelper do
 
     schema
   end
+
+  def client do
+    Qiitex.Client.new(%{access_token: ""})
+  end
 end
