@@ -14,6 +14,7 @@ defmodule Qiitex.TagsTest do
 
     list(@client)
     |> Enum.each(fn(e) ->
+      assert is_map e
       assert ExJsonSchema.Validator.validate(@schema , e) == :ok
     end)
   end
@@ -31,6 +32,7 @@ defmodule Qiitex.TagsTest do
   test "user_following/3" do
     user_following(@client, "tamanugi")
     |> Enum.each(fn(e) ->
+      assert is_map e
       assert ExJsonSchema.Validator.validate(@schema , e) == :ok
     end)
   end

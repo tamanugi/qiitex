@@ -15,6 +15,7 @@ defmodule Qiitex.ItemsTest do
 
     list(@client)
     |> Enum.each(fn(e) ->
+      assert is_map e
       assert ExJsonSchema.Validator.validate(@schema , e) == :ok
     end)
   end
@@ -52,6 +53,7 @@ defmodule Qiitex.ItemsTest do
   test "list_user_stock_items/3" do
     list_user_stock_items(@client, "tamanugi")
     |> Enum.each(fn(e) ->
+      assert is_map e
       assert ExJsonSchema.Validator.validate(@schema , e) == :ok
     end)
   end
