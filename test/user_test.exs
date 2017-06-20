@@ -1,10 +1,10 @@
 defmodule Qiitex.UserTest do
   use ExUnit.Case
   import Qiitex.User
-  alias Qiitex.Schema.SchemaHelper
+  alias Qiitex.TestHelper
 
   @client Qiitex.Client.new(%{access_token: "enteryouraccesstoken"})
-  @schema SchemaHelper.schema("user")
+  @schema TestHelper.schema("user")
 
   setup_all do
     HTTPoison.start

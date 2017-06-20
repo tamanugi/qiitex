@@ -1,10 +1,10 @@
 defmodule Qiitex.TagsTest do
   use ExUnit.Case
   import Qiitex.Tags
-  alias Qiitex.Schema.SchemaHelper
+  alias Qiitex.TestHelper
 
   @client Qiitex.Client.new
-  @schema SchemaHelper.schema("tag")
+  @schema TestHelper.schema("tag")
 
   setup_all do
     HTTPoison.start

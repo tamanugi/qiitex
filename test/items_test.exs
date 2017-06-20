@@ -1,11 +1,10 @@
 defmodule Qiitex.ItemsTest do
   use ExUnit.Case
   import Qiitex.Items
-  alias Qiitex.Schema.SchemaHelper
+  alias Qiitex.TestHelper
 
   @client Qiitex.Client.new
-
-  @schema SchemaHelper.schema("item")
+  @schema TestHelper.schema("item")
 
   setup_all do
     HTTPoison.start

@@ -1,6 +1,6 @@
 ExUnit.start()
 
-defmodule Qiitex.Schema.SchemaHelper do
+defmodule Qiitex.TestHelper do
 
   @json_schema_url "http://qiita.com/api/v2/schema?locale=en"
 
