@@ -4,7 +4,12 @@ Simple Elixir wrapper for the [Qiita v2 API](https://qiita.com/api/v2/docs).
 
 Based heavily on the [Tentacat](https://github.com/edgurgel/tentacat) libraries
 
-## Features
+## Usage
+
+```elixir
+iex> client = Qiitex.client.new()
+iex> Qiitex.Tags.list client
+```
 
 ## Installation
 
