@@ -1,6 +1,10 @@
 # Qiitex
 
-**TODO: Add description**
+Simple Elixir wrapper for the [Qiita v2 API](https://qiita.com/api/v2/docs).
+
+Based heavily on the [Tentacat](https://github.com/edgurgel/tentacat) libraries
+
+## Features
 
 ## Installation
 
