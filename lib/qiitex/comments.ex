@@ -12,4 +12,8 @@ defmodule Qiitex.Comments do
   def delete_comment(client, comment_id) do
     delete "/comments/#{comment_id}", client
   end
+
+  def update_comment(client, comment_id ,param) do
+    patch "/comments/#{comment_id}", client, param
+  end
 end
