@@ -16,4 +16,8 @@ defmodule Qiitex.Comments do
   def update_comment(client, comment_id ,param) do
     patch "/comments/#{comment_id}", client, param
   end
+
+  def create_comment(client, item_id, param) do
+    post "/items/#{item_id}/comments", client, param
+  end
 end
