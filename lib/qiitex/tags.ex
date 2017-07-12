@@ -26,7 +26,7 @@ defmodule Qiitex.Tags do
     Qiitex.Tags.find client, "tagid"
     ```
   """
-  def find(client, tag_id \\ "") do
+  def find(client, tag_id) do
     get "/tags/#{tag_id}", client
   end
 

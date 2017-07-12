@@ -15,8 +15,8 @@ defmodule Qiitex.User do
     Qiitex.Users.list_item_stockers client, "itemid", %{page: 1, per_page: 40}
     ```
   """
-  def list_item_stockers(client, item_id) do
-    get "/items/#{item_id}/stockers", client
+  def list_item_stockers(client, item_id, params \\ []) do
+    get "/items/#{item_id}/stockers", client, params
   end
 
   @doc """
@@ -29,8 +29,8 @@ defmodule Qiitex.User do
     Qiitex.Users.list client, %{page: 1, per_page: 40}
     ```
   """
-  def list(client) do
-    get "/users", client
+  def list(client, params \\ []) do
+    get "/users", client, params
   end
 
   @doc """
@@ -56,8 +56,8 @@ defmodule Qiitex.User do
     Qiitex.Users.followees client, "userid", %{page: 1, per_page: 40}
     ```
   """
-  def followees(client, user_id) do
-    get "/users/#{user_id}/followees", client
+  def followees(client, user_id, params \\ []) do
+    get "/users/#{user_id}/followees", client, params
   end
 
   @doc """
