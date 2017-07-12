@@ -19,6 +19,8 @@ end
 
 ## Usage
 
+Get access token [here](https://qiita.com/settings/tokens/new) 
+
 ```elixir
 iex> client = Qiitex.client.new %{access_token: "enteryouraccesstoken"}
 iex> Qiitex.Tags.list client
