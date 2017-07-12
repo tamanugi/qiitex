@@ -13,7 +13,7 @@ by adding `qiitex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:qiitex, "~> 0.1.0"}]
+  [{:qiitex, "~> 0.2.0"}]
 end
 ```
 
