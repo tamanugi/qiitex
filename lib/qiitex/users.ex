@@ -1,4 +1,4 @@
-defmodule Qiitex.User do
+defmodule Qiitex.Users do
   import Qiitex
 
   def authenticated_user(client) do
