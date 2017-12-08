@@ -13,6 +13,7 @@ defmodule Qiitex do
 
   @spec process_response(HTTPoison.Response.t) :: response
   def process_response(%HTTPoison.Response{status_code: _, body: body}), do: body
+  def process_response(body), do: body
 
   @spec delete(binary, Client.t, binary) :: response
   def delete(path, client, body \\ "") do
@@ -35,9 +36,78 @@ defmodule Qiitex do
   end
 
   @spec get(binary, Client.t, [{atom, binary}] | []) :: response
-  def get(path, client, params \\ []) do
+  def get(path, client, params \\ [], options \\ []) do
     url = url(client, path) |> add_params_to_url(params)
-    _request(:get, url, client.auth)
+
+    # case pagination(options) do
+    #   nil -> _request(:get, url, client.auth)
+      # :stream -> request_stream(:get, url, client.auth)
+    # end
+    request_stream(:get, url, client.auth)
+  end
+
+  def request_stream(method, url, auth, body \\ "", override \\ "") do
+    request_with_pagination(method, url, auth, body)
+    |> stream_if_needed(override)
+  end
+
+  defp stream_if_needed(result = {status_code, _}, _) when is_number(status_code), do: result
+  defp stream_if_needed({body, nil, _}, _), do: body
+  defp stream_if_needed({body, _, _}, :one_page), do: body
+  defp stream_if_needed(initial_results, _) do
+    Stream.resource(
+      fn -> initial_results end,
+      &process_stream/1,
+      fn _ -> nil end)
+  end
+
+  defp process_stream({[], nil, _}), do: {:halt, nil}
+  defp process_stream({[], next, auth}) do
+    IO.puts inspect next
+    request_with_pagination(:get, next, auth, "")
+    |> process_stream
+  end
+  defp process_stream({items, next, auth}) when is_list(items) do
+    {items, {[], next, auth}}
+  end
+  defp process_stream({item, next, auth}) do
+    {[item], {[], next, auth}}
+  end
+
+  def request_with_pagination(method, url, auth, body \\ "") do
+    resp = json_request(
+      method, url, body,
+      ["Content-Type": "application/json"] ++ authorization_header(auth, @user_agent)
+    )
+    case process_response(resp) do
+      x when is_tuple(x) -> x
+      _ -> pagination_tuple(resp, auth)
+    end
+  end
+  
+  defp pagination_tuple(%HTTPoison.Response{headers: headers} = resp, auth) do
+    {process_response(resp), next_link(headers), auth}
+  end
+
+  defp next_link(headers) do
+    IO.puts inspect headers
+    for {"Link", link_header} <- headers, links <- String.split(link_header, ",") do
+      Regex.named_captures(~r/<(?<link>.*)>;\s*rel=\"(?<rel>.*)\"/, links)
+      |> case do
+        %{"link" => link, "rel" => "next"} -> link
+        _ -> nil
+      end
+    end
+    |> Enum.filter(&(not is_nil(&1)))
+    |> List.first
+  end
+
+  defp pagination(options) do
+    Keyword.get(options, :pagination, nil)
+  end
+
+  defp pagination_tuple(%HTTPoison.Response{headers: headers} = resp, auth) do
+    {process_response(resp), next_link(headers), auth}
   end
 
   def _request(method, url, auth, body \\ "") do
