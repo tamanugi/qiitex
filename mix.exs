@@ -38,7 +38,8 @@ defmodule Qiitex.Mixfile do
       {:httpoison, "~>0.11"},
       {:poison, "~>3.1"},
       {:ex_json_schema, "~> 0.5.4"},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:earmark, ">= 0.0.0", only: :dev}
     ]
   end
 end
