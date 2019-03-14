@@ -1,6 +1,6 @@
 defmodule Qiitex.CommentsTest do
   use ExUnit.Case
-  import Qiitex.Comments
+  alias Qiitex.Api.Comment
   alias Qiitex.TestHelper
 
   @client TestHelper.client
@@ -12,13 +12,13 @@ defmodule Qiitex.CommentsTest do
 
   test "find/2" do
 
-    comment = find(@client, "2dde107f6a0bcbf82edf")
+    comment = Comment.get_comment(@client, "2dde107f6a0bcbf82edf")
     assert ExJsonSchema.Validator.validate(@schema, comment) == :ok
   end
 
   test "list_item_comments/2" do
 
-    list_item_comments(@client, "5bbf6ef210273cf60dd4")
+    Comment.list_item_comments(@client, "5bbf6ef210273cf60dd4")
     |> Enum.each(fn(e) ->
       assert is_map e
       assert ExJsonSchema.Validator.validate(@schema , e) == :ok
