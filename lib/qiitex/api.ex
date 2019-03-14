@@ -20,27 +20,34 @@ Enum.each(Qiitex.Api.get_documentation(), fn {module_name, functions} ->
 
     Enum.each(functions["links"] |> Enum.uniq, fn doc ->
       function_name = doc["title"] |> String.to_atom
-      arguments = Qiitex.Documentation.get_required_arguments(doc, module)
+      {href_args, param_args} = Qiitex.Documentation.get_required_arguments(doc, module)
       href = doc["href"]
       method = String.to_atom(doc["method"])
+
+      arguments = List.flatten([href_args, param_args])
+                    |> Enum.map(fn x ->
+                      x
+                      |> String.to_atom
+                      |> Macro.var(module)
+                    end)
 
       @doc """
       #{Qiitex.Documentation.create_doc_string(doc)}
       """
       unless Qiitex.Documentation.has_option_params?(doc) do
         def unquote(function_name)(client, unquote_splicing(arguments)) do
-          {url, params} = create_url_and_params(unquote(href), unquote(arguments))
-          perfom(unquote(method), client, url, params, %{})
+          {url, params} = create_url_and_params(unquote(href), unquote(arguments), unquote(param_args))
+          perfom(unquote(method), client, url, params)
         end
       else
         def unquote(function_name)(client, unquote_splicing(arguments), option \\ %{}) do
-          {url, params} = create_url_and_params(unquote(href), unquote(arguments))
-          perfom(unquote(method), client, url, params, option)
+          {url, params} = create_url_and_params(unquote(href), unquote(arguments), unquote(param_args))
+          perfom(unquote(method), client, url, Map.merge(params, option))
         end
       end
     end)
 
-    defp create_url_and_params(url, arguments) do
+    defp create_url_and_params(url, arguments, param_args) do
       {splited_url, rest_params} = url
       |> String.split("/")
       |> Enum.map_reduce(arguments, fn x, acc ->
@@ -51,29 +58,14 @@ Enum.each(Qiitex.Api.get_documentation(), fn {module_name, functions} ->
         end
       end)
 
-      {splited_url |> Enum.join("/"), rest_params}
+      params = Enum.zip(param_args,rest_params) |> Enum.into(%{})
+
+      {splited_url |> Enum.join("/"), params}
     end
 
-    defp perfom(:GET, client, url, params, _options) do
-      IO.inspect url
-      Qiitex.get(url, client, params)
+    defp perfom(method, client, path, params) do
+      Qiitex.request(method, client, path, params)
     end
-    defp perfom(:POST, client, url, params, _options) do
-      Qiitex.get(url, client, params)
-    end
-    defp perfom(:DELTE, client, url, params, _options) do
-      Qiitex.get(url, client, params)
-    end
-    defp perfom(:PATCH, client, url, params, _options) do
-      Qiitex.get(url, client, params)
-    end
-    defp perfom(:PUPT, client, url, params, _options) do
-      Qiitex.get(url, client, params)
-    end
-    defp perfom(:UPDATE, client, url, params, _options) do
-      Qiitex.get(url, client, params)
-    end
-
   end
 end)
   

@@ -1,14 +1,9 @@
 defmodule Qiitex.Documentation do
   def get_required_arguments(doc, module) do
     href_args = get_href_args(doc)
-    required_args = doc |> get_schema() |> get_required
+    param_args = doc |> get_schema() |> get_required
 
-    List.flatten([href_args, required_args])
-    |> Enum.map(fn x ->
-      x
-      |> String.to_atom
-      |> Macro.var(module)
-    end)
+    {href_args, param_args}
   end
 
   defp get_href_args(%{"href" => url}) do
