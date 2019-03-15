@@ -1,6 +1,6 @@
 defmodule Qiitex.TagsTest do
   use ExUnit.Case
-  import Qiitex.Tags
+  import Qiitex.Api.Tag
   alias Qiitex.TestHelper
 
   @client TestHelper.client
@@ -10,17 +10,19 @@ defmodule Qiitex.TagsTest do
     HTTPoison.start
   end
 
-  test "list/2" do
+  test "list_tags/2" do
 
-    list(@client)
+    {:ok, res} = list_tags(@client)
+
+    res
     |> Enum.each(fn(e) ->
       assert is_map e
       assert ExJsonSchema.Validator.validate(@schema , e) == :ok
     end)
   end
 
-  test "find/2" do
-    tag = find(@client, "elixir")
+  test "get_tag/2" do
+    {:ok, tag} = get_tag(@client, "elixir")
     assert ExJsonSchema.Validator.validate(@schema , tag) == :ok
     %{"icon_url" => icon_url,
       "id" => id} = tag
@@ -30,7 +32,8 @@ defmodule Qiitex.TagsTest do
   end
 
   test "user_following/3" do
-    user_following(@client, "tamanugi")
+    {:ok, res} = list_user_following_tags(@client, "tamanugi")
+    res
     |> Enum.each(fn(e) ->
       assert is_map e
       assert ExJsonSchema.Validator.validate(@schema , e) == :ok

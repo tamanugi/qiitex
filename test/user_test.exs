@@ -1,6 +1,6 @@
 defmodule Qiitex.UserTest do
   use ExUnit.Case
-  import Qiitex.User
+  import Qiitex.Api.User
   alias Qiitex.TestHelper
 
   @client TestHelper.client
@@ -11,7 +11,7 @@ defmodule Qiitex.UserTest do
   end
 
   test "authenticated_user/1" do
-    user = authenticated_user(@client)
+    {:ok, user} = Qiitex.Api.AuthenticatedUser.get_authenticated_user(@client)
     assert ExJsonSchema.Validator.validate(@schema , user) == :ok
     assert user["id"] == "tamanugi"
   end

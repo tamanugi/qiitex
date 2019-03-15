@@ -3,7 +3,7 @@ defmodule Qiitex.Mixfile do
 
   def project do
     [app: :qiitex,
-     version: "0.2.1",
+     version: "1.0.0",
      elixir: "~> 1.4",
      description: "Simple API wrapper for Qiita API v2",
      package: [
@@ -38,7 +38,8 @@ defmodule Qiitex.Mixfile do
       {:httpoison, "~>0.11"},
       {:poison, "~>3.1"},
       {:ex_json_schema, "~> 0.5.4"},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:earmark, ">= 0.0.0", only: :dev}
     ]
   end
 end

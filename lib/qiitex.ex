@@ -1,59 +1,53 @@
 defmodule Qiitex do
-  use HTTPoison.Base
-
   alias Qiitex.Client
 
-  @user_agent [{"User-agent", "qiitex"}]
+  @user_agent {"User-agent", "qiitex"}
+  @content_type {"Content-Type", "application/json"}
 
-  @type response :: binary | {integer, binary}
-
-  @spec process_response_body(binary) :: Poison.Parser.t
-  def process_response_body(""), do: nil
-  def process_response_body(body), do: Poison.decode!(body)
-
-  @spec process_response(HTTPoison.Response.t) :: response
-  def process_response(%HTTPoison.Response{status_code: _, body: body}), do: body
-
-  @spec delete(binary, Client.t, binary) :: response
-  def delete(path, client, body \\ "") do
-    _request(:delete, url(client, path), client.auth, body)
+  def request(method, client, path, params) do
+    headers = authorization_header(client.auth)
+    url = url(client, path)
+    _request(method, url, params, headers)
   end
 
-  @spec post(binary, Client.t, binary) :: response
-  def post(path, client, body \\ "") do
-    _request(:post, url(client, path), client.auth, body)
+  defp _request(:GET, url, params, header) do
+    HTTPoison.get!(url, header, params: params)
+    |> process_response
   end
-
-  @spec patch(binary, Client.t, binary) :: response
-  def patch(path, client, body \\ "") do
-    _request(:patch, url(client, path), client.auth, body)
+  defp _request(:POST, url, params, header) do
+    HTTPoison.post!(url, body(params), header)
+    |> process_response
   end
-
-  @spec put(binary, Client.t, binary) :: response
-  def put(path, client, body \\ "") do
-    _request(:put, url(client, path), client.auth, body)
+  defp _request(:DELETE, url, _params, header) do
+    HTTPoison.delete!(url, header)
+    |> process_response
   end
-
-  @spec get(binary, Client.t, [{atom, binary}] | []) :: response
-  def get(path, client, params \\ []) do
-    url = url(client, path) |> add_params_to_url(params)
-    _request(:get, url, client.auth)
+  defp _request(:PATCH, url, params, header) do
+    HTTPoison.patch!(url, params, header)
+    |> process_response
   end
-
-  def _request(method, url, auth, body \\ "") do
-    json_request(
-      method, url, body,
-      ["Content-Type": "application/json"] ++ authorization_header(auth, @user_agent)
-    )
+  defp _request(:PUT, url, params, header) do
+    HTTPoison.put!(url, params, header)
     |> process_response
   end
 
-  def json_request(method, url, body \\ "", headers \\ [], options \\ []) do
-    encoded_body = case body do
-      "" -> body
-      _  -> Poison.encode!(body) 
-    end
-    request!(method, url, encoded_body, headers, options) 
+  defp body(params) when is_map(params) do
+    params
+    |> Poison.encode!
+  end
+
+  def process_response(%HTTPoison.Response{status_code: status_code, body: body}) when status_code in [400, 401, 403, 404, 500] do
+    {_, res} = body
+    |> Poison.decode
+
+    {:error, res}
+  end
+
+  def process_response(%HTTPoison.Response{body: body}) do
+    {_, res} = body
+    |> Poison.decode
+
+    {:ok, res}
   end
 
   @spec url(client :: Client.t, path :: binary) :: binary
@@ -98,6 +92,5 @@ defmodule Qiitex do
   @doc """
   Same as `authorization_header/2` but defaults initial headers to include `@user_agent`.
   """
-  def authorization_header(options), do: authorization_header(options, @user_agent)
-
+  def authorization_header(options), do: authorization_header(options, [@user_agent, @content_type])
 end

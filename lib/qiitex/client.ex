@@ -1,5 +1,5 @@
 defmodule Qiitex.Client do
-  defstruct auth: nil, endpoint: "https://qiita.com/api/v2/"
+  defstruct auth: nil, endpoint: "https://qiita.com"
 
   @type auth :: %{access_token: binary}
   @type t :: %__MODULE__{auth: auth, endpoint: binary}
