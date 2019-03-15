@@ -13,6 +13,6 @@ defmodule Qiitex.TestHelper do
   end
 
   def client do
-    Qiitex.Client.new(%{access_token: "cf777ee853503abd78dfed06dc51e8b31bde7749"})
+    Qiitex.Client.new(%{access_token: ""})
   end
 end
