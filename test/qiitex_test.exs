@@ -11,13 +11,13 @@ defmodule QiitexTest do
   test "process response on a 200 response" do
     assert process_response(%HTTPoison.Response{ status_code: 200,
                                                  headers: %{},
-                                                 body: "json" }) == "json"
+                                                 body: "{\"message\": \"success\"}" }) == {:ok, %{"message" => "success"}}
   end
 
   test "process response on a non-200 response" do
     assert process_response(%HTTPoison.Response{ status_code: 404,
                                                  headers: %{},
-                                                 body: "json" }) == "json"
+                                                 body: "{\"message\": \"error\"}" }) == {:error, %{"message" => "error"}}
   end
 
 end
