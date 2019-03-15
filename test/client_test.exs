@@ -6,7 +6,7 @@ defmodule Qiitex.ClientTest do
 
   test "default endpoint" do
     client = new(%{})
-    assert client.endpoint == "https://qiita.com/"
+    assert client.endpoint == "https://qiita.com"
   end
 
   test "access token" do
