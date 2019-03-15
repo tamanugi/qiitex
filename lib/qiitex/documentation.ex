@@ -1,12 +1,5 @@
 defmodule Qiitex.Documentation do
-  def get_required_arguments(doc) do
-    href_args = get_href_args(doc)
-    param_args = doc |> get_schema() |> get_required
-
-    {href_args, param_args}
-  end
-
-  defp get_href_args(%{"href" => url}) do
+  def get_href_args(%{"href" => url}) do
      ~r/:([a-z_]*)/
     |> Regex.scan(url)
     |> Enum.map(fn [_, x] -> x end)
@@ -20,17 +13,18 @@ defmodule Qiitex.Documentation do
   defp get_required(%{"required" => required}), do: required
   defp get_required(_), do: []
 
-  def has_option_params?(%{"schema" => schema}), do: has_option_params?(schema)
-  def has_option_params?(%{"properties" => properties, "required" => required}) do
+  def has_required?(%{"schema" => schema}), do: has_required?(schema)
+  def has_required?(%{"required" => _}), do: true
+  def has_required?(_), do: false
+
+  def has_option?(%{"schema" => schema}), do: has_option?(schema)
+  def has_option?(%{"properties" => properties, "required" => required}) do
     properties
     |> Map.to_list
     |> length != length(required)
   end
-  def has_option_params?(%{"properties" => _}), do: true
-  def has_option_params?(%{}), do: false
-
-  defp get_option(true), do: ["option \\\\ %{}"]
-  defp get_option(_), do: []
+  def has_option?(%{"properties" => _}), do: true
+  def has_option?(%{}), do: false
 
   defp get_properties(%{"properties" => properties}), do: properties
   defp get_properties(_), do: %{}
@@ -60,7 +54,7 @@ defmodule Qiitex.Documentation do
       |> Enum.filter(fn {key, _} ->
         Enum.member?(["type", "example", "format", "pattern"], key)
       end)
-      |> Enum.map(fn {pk, pv} = x ->
+      |> Enum.map(fn {pk, pv} ->
         case pv do
           str when is_binary(str) -> "  * #{pk}: `#{pv}`"
           n ->

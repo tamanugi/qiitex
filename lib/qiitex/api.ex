@@ -20,11 +20,11 @@ Enum.each(Qiitex.Api.get_documentation(), fn {module_name, functions} ->
 
     Enum.each(functions["links"] |> Enum.uniq, fn doc ->
       function_name = doc["title"] |> String.to_atom
-      {href_args, param_args} = Qiitex.Documentation.get_required_arguments(doc)
+      href_args = Qiitex.Documentation.get_href_args(doc)
       href = doc["href"]
       method = String.to_atom(doc["method"])
 
-      arguments = List.flatten([href_args, param_args])
+      arguments = href_args
                     |> Enum.map(fn x ->
                       x
                       |> String.to_atom
@@ -34,21 +34,27 @@ Enum.each(Qiitex.Api.get_documentation(), fn {module_name, functions} ->
       @doc """
       #{Qiitex.Documentation.create_doc_string(doc)}
       """
-      unless Qiitex.Documentation.has_option_params?(doc) do
-        def unquote(function_name)(client, unquote_splicing(arguments)) do
-          {url, params} = create_url_and_params(unquote(href), unquote(arguments), unquote(param_args))
-          perfom(unquote(method), client, url, params)
-        end
-      else
-        def unquote(function_name)(client, unquote_splicing(arguments), option \\ %{}) do
-          {url, params} = create_url_and_params(unquote(href), unquote(arguments), unquote(param_args))
-          perfom(unquote(method), client, url, Map.merge(params, option))
-        end
+      cond do
+        Qiitex.Documentation.has_required?(doc) ->
+          def unquote(function_name)(client, unquote_splicing(arguments), params) do
+            path = build_path_with_arguments(unquote(href), unquote(arguments))
+            perfom(unquote(method), client, path, params)
+          end
+        Qiitex.Documentation.has_option?(doc) ->
+          def unquote(function_name)(client, unquote_splicing(arguments), options \\ %{}) do
+            path = build_path_with_arguments(unquote(href), unquote(arguments))
+            perfom(unquote(method), client, path, options)
+          end
+        true ->
+          def unquote(function_name)(client, unquote_splicing(arguments)) do
+            path = build_path_with_arguments(unquote(href), unquote(arguments))
+            perfom(unquote(method), client, path, %{})
+          end
       end
     end)
 
-    defp create_url_and_params(url, arguments, param_args) do
-      {splited_url, rest_params} = url
+    defp build_path_with_arguments(url, arguments) do
+      {splited_url, _} = url
       |> String.split("/")
       |> Enum.map_reduce(arguments, fn x, acc ->
         case x do
@@ -58,9 +64,7 @@ Enum.each(Qiitex.Api.get_documentation(), fn {module_name, functions} ->
         end
       end)
 
-      params = Enum.zip(param_args,rest_params) |> Enum.into(%{})
-
-      {splited_url |> Enum.join("/"), params}
+      splited_url |> Enum.join("/")
     end
 
     defp perfom(method, client, path, params) do
