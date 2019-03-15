@@ -18,8 +18,8 @@ defmodule Qiitex do
     HTTPoison.post!(url, body(params), header)
     |> process_response
   end
-  defp _request(:DELETE, url, params, header) do
-    HTTPoison.delete!(url, params, header)
+  defp _request(:DELETE, url, _params, header) do
+    HTTPoison.delete!(url, header)
     |> process_response
   end
   defp _request(:PATCH, url, params, header) do
