@@ -1,5 +1,5 @@
 defmodule Qiitex.Documentation do
-  def get_required_arguments(doc, module) do
+  def get_required_arguments(doc) do
     href_args = get_href_args(doc)
     param_args = doc |> get_schema() |> get_required
 
@@ -51,7 +51,7 @@ defmodule Qiitex.Documentation do
 
     schema = get_schema(doc)
 
-    params = schema 
+    params = schema
     |> get_properties
     |> Map.to_list
     |> Enum.map(fn {key, prop} ->

@@ -20,7 +20,7 @@ Enum.each(Qiitex.Api.get_documentation(), fn {module_name, functions} ->
 
     Enum.each(functions["links"] |> Enum.uniq, fn doc ->
       function_name = doc["title"] |> String.to_atom
-      {href_args, param_args} = Qiitex.Documentation.get_required_arguments(doc, module)
+      {href_args, param_args} = Qiitex.Documentation.get_required_arguments(doc)
       href = doc["href"]
       method = String.to_atom(doc["method"])
 
@@ -68,4 +68,3 @@ Enum.each(Qiitex.Api.get_documentation(), fn {module_name, functions} ->
     end
   end
 end)
-  
