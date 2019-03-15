@@ -36,12 +36,19 @@ defmodule Qiitex do
     |> Poison.encode!
   end
 
-  def process_response(res) do
-    res
-    |> Map.fetch!(:body)
-    |> Poison.Parser.parse!
+  def process_response(%HTTPoison.Response{status_code: status_code, body: body}) when status_code in [400, 401, 403, 404, 500] do
+    {_, res} = body
+    |> Poison.decode
+
+    {:error, res}
   end
 
+  def process_response(%HTTPoison.Response{body: body}) do
+    {_, res} = body
+    |> Poison.decode
+
+    {:ok, res}
+  end
 
   @spec url(client :: Client.t, path :: binary) :: binary
   defp url(_client = %Client{endpoint: endpoint}, path) do
