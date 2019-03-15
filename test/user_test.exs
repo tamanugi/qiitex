@@ -11,7 +11,7 @@ defmodule Qiitex.UserTest do
   end
 
   test "authenticated_user/1" do
-    user = Qiitex.Api.AuthenticatedUser.get_authenticated_user(@client)
+    {:ok, user} = Qiitex.Api.AuthenticatedUser.get_authenticated_user(@client)
     assert ExJsonSchema.Validator.validate(@schema , user) == :ok
     assert user["id"] == "tamanugi"
   end
